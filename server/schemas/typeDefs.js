@@ -17,4 +17,9 @@ type Book {
     image: String
     link: String
     title: String
+}
+
+type Auth {
+    token: ID!
+    user: User
 }`
