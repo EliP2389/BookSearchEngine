@@ -8,6 +8,10 @@ const { ApolloServer } = require('apollo-server-express');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
+const startServer = async () => {
+  const server = new ApolloServer({})
+}
+
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
 
