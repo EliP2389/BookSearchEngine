@@ -14,7 +14,7 @@ const resolvers = {
             }
 
             throw new AuthenticationError('Not logged in');
-        }
+        },
     },
 
     Mutation: {
@@ -40,9 +40,9 @@ const resolvers = {
 
             return { token, user };
         },
-        savedBook: async (parent, args, context) => {
+        saveBook: async (parent, args, context) => {
             if (context.user) {
-                const user = await User.fineOneAndUpdate(
+                const user = await User.fineByIdAndUpdate(
                     { _id: context.user._id },
                     { $push: { savedBooks: { args } } },
                     { new: true }
@@ -55,7 +55,7 @@ const resolvers = {
             if (context.user) {
                 const user = await User.fineOneAndUpdate(
                     { _id: context.user._id },
-                    { $pull : { savedBooks: bookId }},
+                    { $pull : { savedBooks: {bookId: bookId }}},
                     { new: true }
                 )
                 return user;

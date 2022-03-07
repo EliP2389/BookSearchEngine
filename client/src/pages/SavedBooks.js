@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react';
+import React from 'react';
 import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
 
-import { getMe, deleteBook } from '../utils/API';
+// import { getMe, deleteBook } from '../utils/API';
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
@@ -19,7 +19,7 @@ const SavedBooks = () => {
 
   const userData = data?.me || data?.user || {};
 
-  const [removeBook, {error}] = useMutation(REMOVE_BOOK);
+  const [removeBook] = useMutation(REMOVE_BOOK);
 
 
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
@@ -31,12 +31,12 @@ const SavedBooks = () => {
     }
 
     try {
-       await removeBook({
+       const {data} = await removeBook({
           variables: {bookId}
       })
 
       // upon success, remove book's id from localStorage
-      removeBookId(bookId);
+      removeBookId(data.bookId);
     } catch (err) {
       console.error(err);
     }
