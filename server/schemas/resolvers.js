@@ -6,7 +6,7 @@ const resolvers = {
     Query: {
         me: async (parent, args, context) => {
             if (context.user) {
-                const userData = await User.fineOne({ _id: context.user._id })
+                const userData = await User.findOne({ _id: context.user._id })
                     .select('-__v -password')
                     .populate('savedBooks');
 
@@ -20,7 +20,7 @@ const resolvers = {
     Mutation: {
         login: async (parent, { email, password }) => {
             const user = await User.findOne({ email });
-
+console.log('[server login]', user)
             if (!user) {
                 throw new AuthenticationError('Wrong email or password');
             }
@@ -36,26 +36,26 @@ const resolvers = {
         },
         addUser: async (parent, args) => {
             const user = await User.create(args);
-            const token = signToken(user)
+            const token = signToken(user);
 
             return { token, user };
         },
         saveBook: async (parent, args, context) => {
             if (context.user) {
-                const user = await User.fineByIdAndUpdate(
+                const user = await User.findByIdAndUpdate(
                     { _id: context.user._id },
-                    { $push: { savedBooks: { args } } },
+                    { $push: { savedBooks: args } },
                     { new: true }
-                );
-                return user;
+                    
+                );return user;
             }
             throw new AuthenticationError('You need to be logged in')
         },
-        removeBook: async (parent, {bookId}, context) => {
+        removeBook: async (parent, args, context) => {
             if (context.user) {
                 const user = await User.fineOneAndUpdate(
                     { _id: context.user._id },
-                    { $pull : { savedBooks: {bookId: bookId }}},
+                    { $pull : { savedBooks: args }},
                     { new: true }
                 )
                 return user;
